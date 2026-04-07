@@ -39,7 +39,7 @@ describe('readonlyMountArgs', () => {
 });
 
 describe('stopContainer', () => {
-  it('calls docker stop for valid container names', () => {
+  it('calls podman stop for valid container names', () => {
     stopContainer('nanoclaw-test-123');
     expect(mockExecSync).toHaveBeenCalledWith(
       `${CONTAINER_RUNTIME_BIN} stop -t 1 nanoclaw-test-123`,
@@ -77,7 +77,7 @@ describe('ensureContainerRuntimeRunning', () => {
     );
   });
 
-  it('throws when docker info fails', () => {
+  it('throws when podman info fails', () => {
     mockExecSync.mockImplementationOnce(() => {
       throw new Error('Cannot connect to the Docker daemon');
     });
@@ -93,7 +93,7 @@ describe('ensureContainerRuntimeRunning', () => {
 
 describe('cleanupOrphans', () => {
   it('stops orphaned nanoclaw containers', () => {
-    // docker ps returns container names, one per line
+    // podman ps returns container names, one per line
     mockExecSync.mockReturnValueOnce(
       'nanoclaw-group1-111\nnanoclaw-group2-222\n',
     );
@@ -131,7 +131,7 @@ describe('cleanupOrphans', () => {
 
   it('warns and continues when ps fails', () => {
     mockExecSync.mockImplementationOnce(() => {
-      throw new Error('docker not available');
+      throw new Error('podman not available');
     });
 
     cleanupOrphans(); // should not throw
